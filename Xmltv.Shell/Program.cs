@@ -84,7 +84,7 @@ namespace Xmltv.Shell
 
             }
             
-            
+            Log.Logger.Information("Parsing has been completed succseefully");
         }
 
 
