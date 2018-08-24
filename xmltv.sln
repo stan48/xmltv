@@ -6,6 +6,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xmltv.Core", "Xmltv.Core\Xm
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xmltv.Shell", "Xmltv.Shell\Xmltv.Shell.csproj", "{C83A9C01-B1C2-4FD9-8FB0-E1384DA5307A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Schema", "Schema", "{12A28AF8-BB06-4A3A-9EB3-631A71D6B898}"
+ProjectSection(SolutionItems) = preProject
+	xmltv.xsd = xmltv.xsd
+	xmltv.dtd = xmltv.dtd
+EndProjectSection
+EndProject
 Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{3377D454-B280-4A0F-9BFE-DA7AECFDDC26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU

@@ -1,31 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Text;
 using System.Xml.Serialization;
 using Serilog;
+using Xmltv.Core;
 using Xmltv.Shell.Model;
 
 namespace Xmltv.Shell
 {
-     [DebuggerDisplay("{Lang}:{Name} -> {List}")]
-    public class ChannelInfo
-    {
-        public string Name { get; set; }
-        
-        public string List { get; set; }
-        
-        public string Lang { get; set; }
-    }
-
     internal class Program
     {
         private const string Other = "_OTHER_";
 
+
+        static Program()
+        {
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.ColoredConsole()
+                .MinimumLevel.Debug()
+                .CreateLogger();
+        }
+
         public static void Main(string[] args)
         {
+            var sources = new[]
+            {
+                new XmltvSource(@"http://epg.iptvlive.org", 10),
+                new XmltvSource(@"http://epg.it999.ru/edem.xml.gz", 100),
+                new XmltvSource(@"http://programtv.ru/xmltv.xml.gz", 30)
+            };
+            
             string alphabet = "abcdefghijklmnopqrstuvwxyzабвгдеёжзийклмнопрстуфхцчшщъыьэюя";
 
             var chars = new List<string>();
@@ -36,35 +43,31 @@ namespace Xmltv.Shell
             }
 
             chars.Add(Other);
-
-            Log.Logger = new LoggerConfiguration()
-                .WriteTo.ColoredConsole()
-                .MinimumLevel.Debug()
-                .CreateLogger();
-
-            string[] files = new[] {"d:\\xmltv-ru.xml.gz"};
-
-            var d = new Dictionary<string, IList<ChannelInfo>>();
-
+            
+            var dict = new Dictionary<string, IList<ChannelInfo>>();
+            
+        
             foreach (var c in chars)
             {
-                d.Add(c, new List<ChannelInfo>());
+                dict.Add(c, new List<ChannelInfo>());
             }
+            
+            var processor = new SourceProcessor();
 
-            foreach (var file in files)
+            foreach (var file in sources)
             {
                 Log.Logger.Information($"The input file {file} is going to be processed");
 
                 Tv tv;
 
-                using (var stream = OpenFile(file))
+                using (var stream = processor.Open(file))
                 {
                     XmlSerializer serializer = new XmlSerializer(typeof(Tv));
 
                     tv = (Tv) serializer.Deserialize(stream);
 
                     var names = tv.Channel.SelectMany(channel => channel.DisplayName
-                            .Select(s => new ChannelInfo {Name = s.Value, List = file, Lang = s.Lang }))
+                            .Select(s => new ChannelInfo { Name = s.Value, List = file.Path, Lang = s.Lang }))
                         .ToList();
 
                     foreach (var info in names)
@@ -73,82 +76,37 @@ namespace Xmltv.Shell
 
                         if (!chars.Contains(key))
                         {
-                            d[Other].Add(info);
+                            dict[Other].Add(info);
                         }
                         else
                         {
-                            d[key].Add(info);
+                            dict[key].Add(info);
                         }
                     }
                 }
-
             }
+            
+            var sb = new StringBuilder();
+
+            foreach (var p in dict)
+            {
+                sb.AppendLine(p.Key);
+                
+                foreach (var channelInfo in p.Value.OrderBy(info => info.Name))
+                {
+                    sb.AppendLine($"{channelInfo.Name} -> {channelInfo.List}");
+                }
+
+                sb.AppendLine("----------------------------------");
+            }
+            
+           
+            File.WriteAllText("d:\\output.txt",sb.ToString());
             
             Log.Logger.Information("Parsing has been completed succseefully");
         }
 
-
-        private static Stream OpenFile(string inputFile)
-        {
-            var fileToDecompress = new FileInfo(inputFile);
-
-            var processors = new Dictionary<string, Func<Stream, Stream>> {{".gz", ReadGzip}, {".xml", ReadXml}};
-
-            var ext = fileToDecompress.Extension.ToLowerInvariant();
-
-            Func<Stream, Stream> func;
-            if (!processors.TryGetValue(ext, out func))
-            {
-                throw new Exception($"Cannot find processor for extenstion {ext}");
-            }
-
-            using (var originalFileStream = fileToDecompress.OpenRead())
-            {
-                Log.Logger.Information($"Input file {inputFile} was successfully extracted into memory. Stream length is {originalFileStream.Length/1024}KB");
-                
-                return func(originalFileStream);
-            }
-        }
-
-        private static Stream ReadXml(Stream inputStream)
-        {
-            var ms = new MemoryStream();
-                    
-            try
-            {
-                inputStream.CopyTo(ms);
-                ms.Seek(0, SeekOrigin.Begin);
-                
-                return ms;
-            }
-            catch (Exception)
-            {
-                ms.Dispose();
-                throw;
-            }
-        }
-
-        private static Stream ReadGzip(Stream inputStream)
-        {
-            using (GZipStream decompressionStream = new GZipStream(inputStream, CompressionMode.Decompress))
-            {
-                var ms = new MemoryStream();
-                    
-                try
-                {
-                    decompressionStream.CopyTo(ms);
-                    ms.Seek(0, SeekOrigin.Begin);
-                        
-                    return ms;
-                }
-                catch (Exception)
-                {
-                    ms.Dispose();
-                    throw;
-                }
-                    
-            }
-        }
+     
 
     }
 }

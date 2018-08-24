@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://juriad.local/xmltv"
+	elementFormDefault="qualified" attributeFormDefault="unqualified"
+	xmlns:tns="http://juriad.local/xmltv">
+	<element name="tv">
+		<complexType>
+			<sequence>
+				<element name="channel" minOccurs="0" maxOccurs="unbounded">
+					<complexType>
+						<sequence>
+							<element name="displayName" maxOccurs="unbounded"
+								type="tns:simpleWithLangType">
+							</element>
+							<element ref="tns:icon" minOccurs="0" maxOccurs="unbounded"/>
+							<element ref="tns:url" minOccurs="0" maxOccurs="unbounded"/>
+						</sequence>
+						<attribute name="id" type="token" use="required"/>
+					</complexType>
+				</element>
+				<element name="programme" minOccurs="0" maxOccurs="unbounded">
+					<complexType>
+						<sequence maxOccurs="unbounded">
+							<element name="title" type="tns:simpleWithLangType"
+								minOccurs="1" maxOccurs="unbounded"/>
+							<element name="subTitle" type="tns:simpleWithLangType"
+								minOccurs="0" maxOccurs="unbounded"/>
+							<element name="desc" type="tns:withLangType" minOccurs="0"
+								maxOccurs="unbounded"/>
+							<element name="credits" minOccurs="0">
+								<complexType>
+									<sequence>
+										<element name="director" type="tns:personType"
+											minOccurs="0" maxOccurs="unbounded"/>
+										<element name="actor" minOccurs="0" maxOccurs="unbounded">
+											<complexType>
+												<simpleContent>
+													<extension base="tns:personType">
+														<attribute name="role" type="tns:simpleValueType"/>
+													</extension>
+												</simpleContent>
+											</complexType>
+										</element>
+										<element name="writer" type="tns:personType"
+											minOccurs="0" maxOccurs="unbounded"/>
+										<element name="adapter" type="tns:personType"
+											minOccurs="0" maxOccurs="unbounded"/>
+										<element name="producer" type="tns:personType"
+											minOccurs="0" maxOccurs="unbounded"/>
+										<element name="composer" type="tns:personType"
+											minOccurs="0" maxOccurs="unbounded"/>
+										<element name="editor" type="tns:personType"
+											minOccurs="0" maxOccurs="unbounded"/>
+										<element name="presenter" type="tns:personType"
+											minOccurs="0" maxOccurs="unbounded"/>
+										<element name="commentator" type="tns:personType"
+											minOccurs="0" maxOccurs="unbounded"/>
+										<element name="guest" type="tns:personType" minOccurs="0"
+											maxOccurs="unbounded"/>
+									</sequence>
+								</complexType>
+							</element>
+							<element name="date" type="tns:dateType" minOccurs="0"/>
+							<element name="category" type="tns:simpleWithLangType"
+								minOccurs="0" maxOccurs="unbounded"/>
+							<element name="language" type="tns:languageType"
+								minOccurs="0"/>
+							<element name="origLanguage" type="tns:languageType"
+								minOccurs="0"/>
+							<element name="length" minOccurs="0">
+								<complexType>
+									<simpleContent>
+										<extension base="nonNegativeInteger">
+											<attribute name="units">
+												<simpleType>
+													<restriction base="tns:simpleValueType">
+														<enumeration value="seconds"/>
+														<enumeration value="minutes"/>
+														<enumeration value="hours"/>
+													</restriction>
+												</simpleType>
+											</attribute>
+										</extension>
+									</simpleContent>
+								</complexType>
+							</element>
+							<element ref="tns:icon" minOccurs="0" maxOccurs="unbounded"/>
+							<element ref="tns:url" minOccurs="0" maxOccurs="unbounded"/>
+							<element name="country" minOccurs="0" maxOccurs="unbounded"
+								type="tns:simpleWithLangType"/>
+							<element name="episodeNum" minOccurs="0" maxOccurs="unbounded">
+								<complexType>
+									<simpleContent>
+										<extension base="tns:episodeNumType">
+											<attribute name="system" default="onscreen"
+												type="tns:simpleValueType"/>
+										</extension>
+									</simpleContent>
+								</complexType>
+							</element>
+							<element name="video" minOccurs="0">
+								<complexType>
+									<sequence>
+										<element ref="tns:present" minOccurs="0"/>
+										<element name="colour" type="tns:yesNoType" minOccurs="0"/>
+										<element name="aspect" minOccurs="0">
+											<simpleType>
+												<restriction base="tns:simpleValueType">
+													<pattern value="\d+\s?:\s?\d+"/>
+												</restriction>
+											</simpleType>
+										</element>
+										<element name="quality" type="tns:simpleValueType"
+											minOccurs="0"/>
+									</sequence>
+								</complexType>
+							</element>
+							<element name="audio" minOccurs="0">
+								<complexType>
+									<sequence>
+										<element ref="tns:present" minOccurs="0"/>
+										<element name="stereo" minOccurs="0">
+											<simpleType>
+												<restriction base="tns:simpleValueType">
+													<enumeration value="mono"/>
+													<enumeration value="stereo"/>
+													<enumeration value="dolby"/>
+													<enumeration value="dolby digital"/>
+													<enumeration value="bilingual"/>
+													<enumeration value="surround"/>
+												</restriction>
+											</simpleType>
+										</element>
+									</sequence>
+								</complexType>
+							</element>
+							<element name="previouslyShown" minOccurs="0">
+								<complexType>
+									<attribute name="start" type="tns:dateType"/>
+									<attribute name="channel" type="tns:simpleValueType"/>
+								</complexType>
+							</element>
+							<element name="premiere" type="tns:withLangType"
+								minOccurs="0"/>
+							<element name="lastChance" type="tns:withLangType"
+								minOccurs="0"/>
+							<element name="new" minOccurs="0">
+								<complexType>
+								</complexType>
+							</element>
+							<element name="subtitles" minOccurs="0">
+								<complexType>
+									<sequence>
+										<element name="language" type="tns:languageType"
+											minOccurs="0"/>
+									</sequence>
+									<attribute name="type">
+										<simpleType>
+											<restriction base="tns:simpleValueType">
+												<enumeration value="teletext"/>
+												<enumeration value="onscreen"/>
+												<enumeration value="deafSigned"/>
+											</restriction>
+										</simpleType>
+									</attribute>
+								</complexType>
+							</element>
+							<element name="rating" minOccurs="0" maxOccurs="unbounded">
+								<complexType>
+									<sequence>
+										<element name="value" type="tns:valueType"/>
+										<element ref="tns:icon" minOccurs="0" maxOccurs="unbounded"/>
+									</sequence>
+									<attribute name="system" type="token"/>
+								</complexType>
+							</element>
+							<element name="starRating" minOccurs="0" maxOccurs="unbounded">
+								<complexType>
+									<sequence>
+										<element name="value">
+											<simpleType>
+												<restriction base="tns:simpleValueType">
+													<pattern value="\d+\s?/\s?\d+"/>
+												</restriction>
+											</simpleType>
+										</element>
+										<element ref="tns:icon" minOccurs="0" maxOccurs="unbounded"/>
+									</sequence>
+								</complexType>
+							</element>
+							<element name="review" minOccurs="0">
+								<complexType>
+									<simpleContent>
+										<extension base="tns:urlOrValueType">
+											<attribute name="type" use="required">
+												<simpleType>
+													<restriction base="token">
+														<enumeration value="text"/>
+														<enumeration value="url"/>
+													</restriction>
+												</simpleType>
+											</attribute>
+											<attribute name="source" type="tns:simpleValueType"/>
+											<attribute name="reviewer" type="tns:personType"/>
+										</extension>
+									</simpleContent>
+								</complexType>
+							</element>
+						</sequence>
+						<attribute name="start" type="tns:dateType" use="required"/>
+						<attribute name="stop" type="tns:dateType"/>
+						<attribute name="pdcStart" type="string"/>
+						<attribute name="vpsStart" type="string"/>
+						<attribute name="showview" type="string"/>
+						<attribute name="videoplus" type="string"/>
+						<attribute name="channel" type="tns:simpleValueType"
+							use="required"/>
+						<attribute name="clumpidx" default="0/1">
+							<simpleType>
+								<restriction base="tns:simpleValueType">
+									<pattern value="\d+\s?/\s?\d+"/>
+								</restriction>
+							</simpleType>
+						</attribute>
+					</complexType>
+				</element>
+			</sequence>
+			<attribute name="date" type="tns:dateType"/>
+			<attribute name="sourceInfoUrl" type="tns:urlType"/>
+			<attribute name="sourceInfoName" type="tns:simpleValueType"/>
+			<attribute name="sourceDataUrl" type="tns:urlType"/>
+			<attribute name="generatorInfoName" type="tns:simpleValueType"/>
+			<attribute name="generatorInfoUrl" type="tns:urlType"/>
+		</complexType>
+	</element>
+
+	<element name="present" type="tns:yesNoType"/>
+
+	<simpleType name="urlType">
+		<restriction base="anyURI"/>
+	</simpleType>
+
+	<element name="url" type="tns:urlType"/>
+
+	<element name="icon">
+		<complexType>
+			<attribute name="src" use="required" type="tns:urlType"/>
+			<attribute name="width" type="positiveInteger"/>
+			<attribute name="height" type="positiveInteger"/>
+		</complexType>
+	</element>
+
+	<simpleType name="urlOrValueType">
+		<restriction base="string"/>
+	</simpleType>
+
+	<simpleType name="episodeNumType">
+		<restriction base="string"/>
+	</simpleType>
+	<complexType name="languageType">
+		<simpleContent>
+			<restriction base="tns:simpleWithLangType"/>
+		</simpleContent>
+	</complexType>
+
+	<simpleType name="yesNoType">
+		<restriction base="boolean"/>
+	</simpleType>
+
+	<simpleType name="dateType">
+		<restriction base="dateTime"/>
+	</simpleType>
+
+	<simpleType name="simpleValueType">
+		<restriction base="token"/>
+	</simpleType>
+
+	<simpleType name="valueType">
+		<restriction base="string"/>
+	</simpleType>
+
+	<attribute name="lang">
+		<simpleType>
+			<restriction base="token">
+				<pattern
+					value="([ix]|\w{2,3})(-\w{3}){0,3}(-\w{4})?(-(\w{2}|\d{3}))?(-(\d.{4}|\w{5,8}))*(-[abcdefghijklmnopqrstvuwyz](-.{2,8})+)*(-x(-.{1,8})+)?">
+				</pattern>
+			</restriction>
+		</simpleType>
+	</attribute>
+
+	<complexType name="simpleWithLangType">
+		<simpleContent>
+			<extension base="tns:simpleValueType">
+				<attribute ref="tns:lang"/>
+			</extension>
+		</simpleContent>
+	</complexType>
+
+	<complexType name="withLangType">
+		<simpleContent>
+			<extension base="tns:valueType">
+				<attribute ref="tns:lang"/>
+			</extension>
+		</simpleContent>
+	</complexType>
+
+	<simpleType name="personType">
+		<restriction base="tns:simpleValueType"/>
+	</simpleType>
+</schema>
